@@ -78,6 +78,22 @@ type Query {
   strategies: [StrategyItem]
 
   strategy(id: String): StrategyItem
+
+  delegationRequests(
+    first: Int
+    skip: Int
+    where: DelegationRequestWhere
+    orderBy: String
+    orderDirection: OrderDirection
+  ): [DelegationRequest]
+
+  delegations(
+    first: Int
+    skip: Int
+    where: DelegationsWhere
+    orderBy: String
+    orderDirection: OrderDirection
+  ): [Delegations]
 }
 
 input SpaceWhere {
@@ -368,4 +384,58 @@ type Treasury {
   name: String
   address: String
   network: String
+}
+
+input DelegationRequestWhere {
+  space: String
+  space_in: [String]
+  ipfs: String
+  ipfs_in: [String]
+  created: Int
+  created_in: [Int]
+  created_gt: Int
+  created_gte: Int
+  created_lt: Int
+  created_lte: Int
+}
+
+type DelegationRequest {
+  id: String!
+  ipfs: String
+  user: String!
+  space: String!
+  created: Int!
+  iam: String!
+  title: String!
+  description: String!
+  rewardPriceOffer: String!
+  maxReward: String!
+  expires: Int!
+}
+
+
+input DelegationsWhere {
+  currentDelegate: String
+  delegator: String
+  space: String
+  space_in: [String]
+  ipfs: String
+  ipfs_in: [String]
+  created: Int
+  created_in: [Int]
+  created_gt: Int
+  created_gte: Int
+  created_lt: Int
+  created_lte: Int
+}
+
+type Delegations {
+  id: String!
+  ipfs: String
+  space: String!
+  created: Int!
+  delegator: String!
+  delegate: String!
+  currentDelegate: String!
+  price: String!
 }

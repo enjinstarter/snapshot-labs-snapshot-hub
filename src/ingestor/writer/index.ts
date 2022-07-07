@@ -8,6 +8,8 @@ import * as alias from './alias';
 import * as subscribe from './subscribe';
 import * as unsubscribe from './unsubscribe';
 import * as profile from './profile';
+import * as newDelegationRequest from './new-delegation-request';
+import * as delegateTo from './delegate-to';
 
 export default {
   proposal,
@@ -19,5 +21,7 @@ export default {
   subscribe,
   unsubscribe,
   alias,
-  profile
+  profile,
+  'new-delegation-request': newDelegationRequest,
+  'delegate-to': delegateTo
 };

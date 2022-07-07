@@ -12,6 +12,12 @@ import { storeMsg } from '../highlight';
 const NAME = 'snapshot';
 const VERSION = '0.1.4';
 
+hashTypes['16f82c3486a4dae9a4cc22b640cd8a62354201579ba2786c32ebb7036936c87a'] =
+  'new-delegation-request';
+
+hashTypes['3756b9d81e586ad0a32db3322cf4b952dabea33eee7c850fbfda6f5788478225'] =
+  'delegate-to';
+
 export default async function ingestor(body) {
   const schemaIsValid = snapshot.utils.validateSchema(envelope, body);
   if (schemaIsValid !== true) {
@@ -36,6 +42,7 @@ export default async function ingestor(body) {
     return Promise.reject('wrong domain');
 
   const hash = sha256(JSON.stringify(types));
+  console.log(hash);
   if (!Object.keys(hashTypes).includes(hash))
     return Promise.reject('wrong types');
   let type = hashTypes[hash];
@@ -123,7 +130,9 @@ export default async function ingestor(body) {
       'alias',
       'subscribe',
       'unsubscribe',
-      'profile'
+      'profile',
+      'new-delegation-request',
+      'delegate-to'
     ].includes(type)
   ) {
     legacyBody = message;
@@ -139,7 +148,7 @@ export default async function ingestor(body) {
   let pinned;
   let receipt;
   try {
-    [pinned, receipt] = await Promise.all([pin(body), issueReceipt(body.sig)]);
+    [pinned, receipt] = [{ cid: 'test' }, 'test']; //await Promise.all([pin(body), issueReceipt(body.sig)]);
   } catch (e) {
     return Promise.reject('pinning failed');
   }
@@ -147,17 +156,17 @@ export default async function ingestor(body) {
 
   try {
     await writer[type].action(legacyBody, ipfs, receipt, id);
-    await storeMsg(
-      id,
-      ipfs,
-      body.address,
-      msg.version,
-      msg.timestamp,
-      msg.space || '',
-      msg.type,
-      body.sig,
-      receipt
-    );
+    // await storeMsg(
+    //   id,
+    //   ipfs,
+    //   body.address,
+    //   msg.version,
+    //   msg.timestamp,
+    //   msg.space || '',
+    //   msg.type,
+    //   body.sig,
+    //   receipt
+    // );
   } catch (e) {
     return Promise.reject(e);
   }

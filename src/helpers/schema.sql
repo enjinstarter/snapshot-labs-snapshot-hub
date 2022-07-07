@@ -149,3 +149,29 @@ CREATE TABLE users (
   INDEX ipfs (ipfs),
   INDEX created (created)
 );
+
+CREATE TABLE delegation_request (
+  id int unsigned not null auto_increment primary key,
+  created INT(11) NOT NULL,
+  user varchar(255) null,
+  space varchar(255) null,
+  iam varchar(255) null,
+  title TEXT null,
+  description MEDIUMTEXT null,
+  rewardPriceOffer varchar(255) null default 0,
+  maxReward varchar(255) null default 0,
+  expires varchar(255) null default 0,
+  ipfs varchar(255) null
+);
+
+
+create table delegations (
+    id int unsigned not null auto_increment primary key,
+    created int not null,
+    space varchar(255) not null,
+    delegator varchar(255) not null,
+    delegate varchar(255) not null,
+    currentDelegate varchar(255) not null,
+    price varchar(255) not null default 0,
+    ipfs varchar(255) not null
+  )

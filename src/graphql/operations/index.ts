@@ -15,6 +15,8 @@ import strategies from './strategies';
 import strategy from './strategy';
 import users from './users';
 import user from './user';
+import delegationRequests from './delegationRequests';
+import delegations from './delegations';
 
 export default {
   space,
@@ -33,5 +35,7 @@ export default {
   strategies,
   strategy,
   users,
-  user
+  user,
+  delegationRequests,
+  delegations
 };

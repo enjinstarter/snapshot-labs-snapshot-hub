@@ -4,7 +4,7 @@ import { spaces } from './spaces';
 export let strategies: any[] = [];
 export let strategiesObj: any = {};
 
-const uri = 'https://score.snapshot.org/api/strategies';
+const uri = `${process.env.SCORES_URL}/api/strategies`;
 
 async function loadStrategies() {
   console.log('[strategies] Load strategies');

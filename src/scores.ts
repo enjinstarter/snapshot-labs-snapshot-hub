@@ -39,7 +39,7 @@ export async function getScores(
   network: string,
   addresses: string[],
   snapshot: number | string = 'latest',
-  scoreApiUrl = 'https://score.snapshot.org/api/scores'
+  scoreApiUrl = `${process.env.SCORES_URL}/api/scores`
 ) {
   try {
     const params = {

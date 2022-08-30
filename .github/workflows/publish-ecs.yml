@@ -121,7 +121,7 @@ jobs:
           ParameterKey=EnvironmentName,UsePreviousValue=true \
           ParameterKey=FargatePlatformVersion,UsePreviousValue=true \
           ParameterKey=HealthCheckPath,UsePreviousValue=true \
-          ParameterKey=ImageTag,ParameterValue="${APP_IMAGE_TAG}" \
+          ParameterKey=ImageTag,ParameterValue="${IMAGE_TAG}" \
           ParameterKey=ListenerRulePriority,UsePreviousValue=true \
           ParameterKey=LoadBalancerHostedZoneId,UsePreviousValue=true \
           ParameterKey=PrivateListener,UsePreviousValue=true \

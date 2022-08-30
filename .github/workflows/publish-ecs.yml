@@ -1,9 +1,18 @@
 name: Publish Docker image to Amazon ECR
 
 on:
-  push:
-    branches:
-      - enjinstarter
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: 'Environment'
+        required: true
+        options:
+          - qat
+          - uat
+          - pt
+          - prd
+        default: 'qat'
 
 env:
   AWS_REGION: ap-northeast-1
@@ -15,14 +24,57 @@ jobs:
     environment: production
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Configure AWS credentials
+      - name: Only for qat, uat, pt or prd environment
+        if: ${{ github.event.inputs.environment != 'qat' && github.event.inputs.environment != 'uat' && github.event.inputs.environment != 'pt' && github.event.inputs.environment != 'prd' }}
+        uses: actions/github-script@v5
+        with:
+          script: core.setFailed('Invalid environment - ${{ github.event.inputs.environment }}')
+      - name: Configure AWS credentials for Production
+        if: ${{ github.event.inputs.environment == 'prd' }}
         uses: aws-actions/configure-aws-credentials@v1
         with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.PRD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PRD_AWS_SECRET_ACCESS_KEY }}
+      - name: Configure AWS credentials for Pentest
+        if: ${{ github.event.inputs.environment == 'pt' }}
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.PT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PT_AWS_SECRET_ACCESS_KEY }}
+      - name: Configure AWS credentials for UAT
+        if: ${{ github.event.inputs.environment == 'uat' }}
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.UAT_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.UAT_AWS_SECRET_ACCESS_KEY }}
+      - name: Configure AWS credentials for QAT
+        if: ${{ github.event.inputs.environment == 'qat' }}
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION}}
           aws-access-key-id: ${{ secrets.QAT_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.QAT_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+      - name: Set environment variables for Production
+        if: ${{ github.event.inputs.environment == 'prd' }}
+        run: |
+          echo "DOCKER_URI=${{ secrets.PRD_DOCKER_URI }}" >> $GITHUB_ENV
+      - name: Set environment variables for Pentest
+        if: ${{ github.event.inputs.environment == 'pt' }}
+        run: |
+          echo "DOCKER_URI=${{ secrets.PT_DOCKER_URI }}" >> $GITHUB_ENV
+      - name: Set environment variables for UAT
+        if: ${{ github.event.inputs.environment == 'uat' }}
+        run: |
+          echo "DOCKER_URI=${{ secrets.UAT_DOCKER_URI }}" >> $GITHUB_ENV
+      - name: Set environment variables for QAT
+        if: ${{ github.event.inputs.environment == 'qat' }}
+        run: |
+          echo "DOCKER_URI=${{ secrets.QAT_DOCKER_URI }}" >> $GITHUB_ENV
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -30,5 +82,5 @@ jobs:
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t ${{ secrets.QAT_DOCKER_URI }}:$IMAGE_TAG .
-          docker push ${{ secrets.QAT_DOCKER_URI }}:$IMAGE_TAG
+          docker build -t $DOCKER_URI:$IMAGE_TAG .
+          docker push $DOCKER_URI:$IMAGE_TAG

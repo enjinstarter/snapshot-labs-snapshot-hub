@@ -113,7 +113,6 @@ jobs:
           ParameterKey=EmailAddress02,UsePreviousValue=true \
           ParameterKey=EmailAddress03,UsePreviousValue=true \
           ParameterKey=EnvDefaultNetwork,UsePreviousValue=true \
-          ParameterKey=EnvMaintenance,UsePreviousValue=true \
           ParameterKey=EnvNetwork,UsePreviousValue=true \
           ParameterKey=EnvScoresUrl,UsePreviousValue=true \
           ParameterKey=EnvSnapshotUri,UsePreviousValue=true \
